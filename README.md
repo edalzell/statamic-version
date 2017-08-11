@@ -10,8 +10,6 @@ Get notified by email when there's a new version of Statamic
 [MIT License](http://emd.mit-license.org/)
 
 ## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
+Help me out for a couple of :beers:!
 
 [![Beerpay](https://beerpay.io/edalzell/statamic-version/badge.svg?style=beer-square)](https://beerpay.io/edalzell/statamic-version)  [![Beerpay](https://beerpay.io/edalzell/statamic-version/make-wish.svg?style=flat-square)](https://beerpay.io/edalzell/statamic-version?focus=wish)
