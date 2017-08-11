@@ -21,10 +21,3 @@ fields:
           template:
             type: template
             display: Template
-      slack:
-        display: Slack
-        fields:
-          channel:
-            type: text
-            display: Channel
-            validate: required
