@@ -4,6 +4,7 @@ Get notified by email when there's a new version of Statamic
 # Install
 1. Copy files to `addons` folder
 2. Visit `http://yousite.com/cp/addons/version/settings` to set up the notifications
+3. Ensure you've set up your cron job so that Tasks are [run](https://docs.statamic.com/addons/classes/tasks#starting)
 
 # LICENSE
 
