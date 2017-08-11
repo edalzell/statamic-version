@@ -1,0 +1,30 @@
+fields:
+  notifications:
+    type: replicator
+    display: Types of Notifications
+    sets:
+      email:
+        display: Email
+        fields:
+          addresses:
+            type: list
+            display: Addresses
+            validate: email
+          from:
+            type: text
+            display: From
+            validate: required|email
+          subject:
+            type: text
+            display: Subject
+            validate: required
+          template:
+            type: template
+            display: Template
+      slack:
+        display: Slack
+        fields:
+          channel:
+            type: text
+            display: Channel
+            validate: required
