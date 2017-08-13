@@ -10,11 +10,8 @@ class VersionController extends Controller
 
     public function getSendNotifications()
     {
-        $this->sendNotifications();
-    }
+        $this->authorize('super');
 
-    public function getUpdateAvailable()
-    {
-        return response(bool_str($this->isUpdateAvailable()));
+        $this->sendNotifications();
     }
 }
