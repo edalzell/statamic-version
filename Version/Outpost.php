@@ -21,7 +21,8 @@ trait Outpost
 
     public function __construct()
     {
-        $this->outpost = app('Statamic\Outpost');
+        $outpost = version_compare(STATAMIC_VERSION, '2.10.0', '<') ? 'Statamic\Outpost' : 'Statamic\Outpost\Outpost';
+        $this->outpost = app($outpost);
         $this->outpost->radio();
     }
 
