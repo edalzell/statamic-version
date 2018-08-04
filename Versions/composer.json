@@ -1,0 +1,7 @@
+{
+    "name": "erin-dalzell/version",
+    "require": {
+        "knplabs/github-api": "^2.9",
+        "php-http/guzzle6-adapter": "^1.1"
+    }
+}

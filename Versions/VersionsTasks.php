@@ -1,11 +1,11 @@
 <?php
 
-namespace Statamic\Addons\Version;
+namespace Statamic\Addons\Versions;
 
 use Statamic\Extend\Tasks;
 use Illuminate\Console\Scheduling\Schedule;
 
-class VersionTasks extends Tasks
+class VersionsTasks extends Tasks
 {
     use Outpost;
 
@@ -16,9 +16,8 @@ class VersionTasks extends Tasks
      */
     public function schedule(Schedule $schedule)
     {
-        $schedule->call(function() {
-            if ($this->isUpdateAvailable())
-            {
+        $schedule->call(function () {
+            if ($this->areUpdatesAvailable()) {
                 $this->sendNotifications();
             }
         })->daily();

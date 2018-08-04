@@ -1,6 +1,0 @@
-name: Version
-version: 1.0
-description: Receive a notification when there's a new version of Statamic
-url: https://github.com/edalzell/statamic-version
-developer: Erin Dalzell
-developer_url: https://github.com/edalzell/
