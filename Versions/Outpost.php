@@ -18,7 +18,7 @@ trait Outpost
     /**
      * Where the cached addons will be stored
      */
-    const ADDONS_CACHE_KEY = 'outdated_addons';
+    private static $addons_cache_key = 'outdated_addons';
 
     /** @var \Statamic\Outpost\Outpost  */
     private $outpost = null;
@@ -47,22 +47,32 @@ trait Outpost
 
     private function hasCachedAddons()
     {
-        return Cache::has(self::ADDONS_CACHE_KEY);
+        return Cache::has(self::addons_cache_key);
+    }
+
+    private function cacheAddons()
+    {
+        Cache::put(self::addons_cache_key, $this->outdatedAddons, 60);
     }
 
     private function getCachedAddons()
     {
-        return Cache::get(self::ADDONS_CACHE_KEY);
+        return Cache::get(self::addons_cache_key);
     }
 
     public function areAddonUpdatesAvailable()
     {
-        return $this->outOfDateAddons->count() > 0;
+        return $this->outdatedAddons->count() > 0;
+    }
+
+    public function isStatamicUpdateAvailable()
+    {
+        return $this->outpost->isUpdateAvailable();
     }
 
     public function loadOutdatedAddons()
     {
-        $this->outOfDateAddons = app(AddonRepository::class)
+        $this->outdatedAddons = app(AddonRepository::class)
             ->thirdParty()
             ->addons()
             ->map(function ($addon, $ignore) {
@@ -79,9 +89,14 @@ trait Outpost
             });
     }
 
-    private function cacheAddons()
+    /**
+     * Undocumented function
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getOutdatedAddons()
     {
-        Cache::put(self::ADDONS_CACHE_KEY, $this->outdatedAddons, 60);
+        return $this->outdatedAddons;
     }
 
     private function isGithubUrl($url)
@@ -115,8 +130,37 @@ trait Outpost
      */
     public function areUpdatesAvailable()
     {
-        return $this->outpost->isUpdateAvailable() ||
-               $this->areAddonUpdatesAvailable();
+        return $this->isStatamicUpdateAvailable() || $this->areAddonUpdatesAvailable();
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return array
+     */
+    private function updateData()
+    {
+        $updates = $this->outdatedAddons->map(function ($addon, $key) {
+            return [
+                'type' => 'addon',
+                'name' => $addon->get('name'),
+                'url' => $addon->get('url'),
+                'latest_version' => $addon->get('latest_version'),
+                'current_version' => $addon->get('version'),
+            ];
+        })->values()->all();
+
+        if ($this->isStatamicUpdateAvailable()) {
+            $updates[] = [
+                'type' => 'statamic',
+                'name' => 'Statamic',
+                'url' => 'https://statamic.com/changelog',
+                'latest_version' => $this->outpost->getLatestVersion(),
+                'current_version' => STATAMIC_VERSION,
+            ];
+        }
+
+        return $updates;
     }
 
     /**
@@ -124,29 +168,29 @@ trait Outpost
      */
     public function sendNotifications()
     {
+        $updates = $this->updateData();
+
         $email_config = collect($this->getConfig('notifications'))->first(function ($ignored, $value) {
             return($value['type'] == 'email');
         });
 
-        collect($email_config['addresses'])->each(function ($email_address, $ignored) use ($email_config) {
-            $this->sendEmail($email_address, $email_config);
+        collect($email_config['addresses'])->each(function ($email_address, $ignored) use ($email_config, $updates) {
+            $this->sendEmail($email_address, $email_config, $updates);
         });
     }
 
     /**
      * @param $address string
      * @param $config array
+     * @param $update array
      */
-    private function sendEmail($address, $config)
+    private function sendEmail($address, $config, $updates)
     {
         Email::create()
             ->to($address)
             ->from($config['from'])
             ->subject($config['subject'])
-            ->with([
-                'changelog_url' => 'https://statamic.com/changelog',
-                'latest_version' => $this->outpost->getLatestVersion(),
-                'current_version' => STATAMIC_VERSION])
+            ->with(['updates' => $updates])
             ->template($config['template'])
             ->in('site/themes/' . Config::getThemeName() . '/templates')
             ->send();
