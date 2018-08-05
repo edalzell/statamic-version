@@ -8,9 +8,9 @@ class VersionsController extends Controller
 {
     use Outpost;
 
-    public function outOfDate()
+    public function outdatedAddons()
     {
-        return $this->view('out-of-date', ['addons' => $this->outOfDateAddons()]);
+        return $this->view('outdated-addons', ['addons' => $this->getOutdatedAddons()]);
     }
 
     public function getSendNotifications()
