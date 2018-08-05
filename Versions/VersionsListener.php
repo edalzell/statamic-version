@@ -8,26 +8,16 @@ use Statamic\Extend\Listener;
 
 class VersionsListener extends Listener
 {
+    use Outpost;
+
     /**
      * The events to be listened for, and the methods to call.
      *
      * @var array
      */
     public $events = [
-        'cp.add_to_head' => 'powerUp',
         'cp.nav.created' => 'nav',
     ];
-
-    /**
-     * Initialize Aggregator assets
-     * @return string css link
-     */
-    public function powerUp()
-    {
-        // $html = $this->js->tag('powertools');
-        // $html .= $this->css->tag('powertools');
-        // return $html;
-    }
 
     /**
      * Add PHP Info to the side nav
@@ -36,13 +26,32 @@ class VersionsListener extends Listener
      */
     public function nav($nav)
     {
-        // Only super users can see the PHP info
         /** @var \Statamic\Data\Users\User $user */
         $user = User::getCurrent();
-        if ($user && $user->isSuper()) {
+        $addonUpdateCount = $this->getOutdatedAddons()->count();
+
+        if ($user && $user->isSuper() && $addonUpdateCount > 0) {
+            // first remove the Updater
+            $statamicUpdate = $nav->get('tools.updater');
+
+            $nav->remove('tools.updater');
+
+            $updates = Nav::item('Updates')
+                ->route('outdated-addons')
+                ->icon('progress-two')
+                ->badge($addonUpdateCount + $statamicUpdate->badge());
+
+            $addonUpdates = Nav::item('Addons')
+                ->route('outdated-addons')
+                ->badge($addonUpdateCount);
+
+            $updates
+                ->add($statamicUpdate->name('Statamic'))
+                ->add($addonUpdates);
+
             $nav->addTo(
                 'tools',
-                Nav::item('Update Addons')->route('out-of-date')->icon('info')
+                $updates
             );
         }
     }
