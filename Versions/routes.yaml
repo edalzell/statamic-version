@@ -1,5 +1,5 @@
 routes:
   # Dashboard
-  /out-of-date:
-    uses: outOfDate
-    as: out-of-date
+  /outdated-addons:
+    uses: outdatedAddons
+    as: outdated-addons
