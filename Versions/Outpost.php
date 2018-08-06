@@ -47,17 +47,17 @@ trait Outpost
 
     private function hasCachedAddons()
     {
-        return Cache::has(self::addons_cache_key);
+        return Cache::has(self::$addons_cache_key);
     }
 
     private function cacheAddons()
     {
-        Cache::put(self::addons_cache_key, $this->outdatedAddons, 60);
+        Cache::put(self::$addons_cache_key, $this->outdatedAddons, 60);
     }
 
     private function getCachedAddons()
     {
-        return Cache::get(self::addons_cache_key);
+        return Cache::get(self::$addons_cache_key);
     }
 
     public function areAddonUpdatesAvailable()
