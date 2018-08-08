@@ -101,7 +101,10 @@ trait Outpost
 
     private function isGithubUrl($url)
     {
-        return Str::contains($url, 'github');
+        // should be at least 3 segments, an empty one, then the username, then the repo.
+        $segments = explode('/', parse_url($url, PHP_URL_PATH));
+
+        return Str::contains($url, 'github') && count($segments) >= 3 && !empty($segments[1]) && !empty($segments[2]);
     }
 
     /**
