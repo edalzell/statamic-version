@@ -9,6 +9,7 @@ use Statamic\API\Email;
 use Statamic\API\Config;
 use Statamic\Extend\Addon;
 use Statamic\Extend\Extensible;
+use Github\Exception\RuntimeException;
 use Statamic\Extend\Management\AddonRepository;
 
 trait Outpost
@@ -108,24 +109,22 @@ trait Outpost
     }
 
     /**
-     * Undocumented function
+     * Gets the latest release of the addon
      *
      * @param Addon $addon
      * @return string
      */
     private function latestAddonVersion($addon)
     {
-        list($ignore, $user, $repo) = explode(
-            '/',
-            parse_url($addon->url(), PHP_URL_PATH)
-        );
+        try {
+            $client = new Client();
 
-        $client = new Client();
+            list($ignore, $user, $repo) = explode('/', parse_url($addon->url(), PHP_URL_PATH));
 
-        return array_get(
-            $client->api('repo')->releases()->latest($user, $repo),
-            'name'
-        );
+            return array_get($client->api('repo')->releases()->latest($user, $repo), 'name');
+        } catch (RuntimeException $re) {
+            return '999';
+        }
     }
 
     /**
