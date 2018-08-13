@@ -10,7 +10,7 @@ class VersionsController extends Controller
 
     public function outdatedAddons()
     {
-        return $this->view('outdated-addons', ['addons' => $this->getOutdatedAddons()]);
+        return $this->view('outdated-addons', ['addons' => $this->getOutdatedAddons(), 'title' => 'Addon Updates']);
     }
 
     public function getSendNotifications()

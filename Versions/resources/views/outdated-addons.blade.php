@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <table class="table">
+    <table class="table card">
         <tr>
             <th>Addon</th>
             <th>Your Version</th>
