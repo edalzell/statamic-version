@@ -31,7 +31,6 @@ trait Outpost
     {
         $outpost = version_compare(STATAMIC_VERSION, '2.10.0', '<') ? 'Statamic\Outpost' : 'Statamic\Outpost\Outpost';
         $this->outpost = app($outpost);
-        $this->radio();
     }
 
     private function radio()
@@ -132,6 +131,8 @@ trait Outpost
      */
     public function areUpdatesAvailable()
     {
+        $this->radio();
+
         return $this->isStatamicUpdateAvailable() || $this->areAddonUpdatesAvailable();
     }
 
