@@ -1,5 +1,5 @@
 name: Versions
-version: 1.1.5
+version: 1.1.6
 description: Receive a notification when there's a new version of Statamic or any of your addons
 url: https://github.com/edalzell/statamic-versions
 developer: Erin Dalzell
